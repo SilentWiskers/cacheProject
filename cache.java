@@ -55,9 +55,7 @@ public class cache{
 		offset++;
 	}
 	
-	for(int i = 0; i < 16; i++){
-		System.out.println(cache[i][0] + " " + cache[i][1] + " " + cache[i][2] + " " + cache[i][3]); 
-	}
+	printHeader(sets, offset_lim, offset_lim);
 	
 	//while
 	int addr = 8;
@@ -82,6 +80,17 @@ public class cache{
 	}
 	
 
+	}
+
+	public static void printHeader(int set, int setSize, int lineSize){
+		System.out.println("Sets: " + set);
+        	System.out.println("Cache Configuration");
+        	System.out.println("");
+        	System.out.println("        " + set + " " + setSize + "-way set associative entries");
+        	System.out.println("        of line size " + lineSize + " bytes");
+        	System.out.println("");
+        	System.out.printf("%6s%8s%6s%7s%8s%7s%8s%n", "Access", "Address", "Tag", "Index", "Offset", "Status", "Memrefs");
+        	System.out.println("------ -------- ------ ----- ------ ------ -------");
 	}
 	
 }
