@@ -58,7 +58,29 @@ public class cache{
 	for(int i = 0; i < 16; i++){
 		System.out.println(cache[i][0] + " " + cache[i][1] + " " + cache[i][2] + " " + cache[i][3]); 
 	}
-
+	
+	//while
+	int addr = 8;
+	int start = 0;
+	int begin = 0;
+	if(cache[addr][4] == 0){
+		//print miss
+		if(addr < offset_lim){
+			start = offset_lim % addr;
+		}
+		else{
+			start = addr % offset_lim;
+		}
+		begin = addr-start;
+		for(int i = 0; i < 4; i++){
+			cache[begin][4] = 1;
+			begin++;
+		}
+	}
+	else if (cache[addr][4] == 1){
+		//print hit	
+	}
+	
 
 	}
 	
