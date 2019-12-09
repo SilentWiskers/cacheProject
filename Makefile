@@ -1,10 +1,10 @@
-CC=javac 
+JC=javac 
 
 all: cache
 
 cache: cache.java
-	$(CC) cache.java
+	$(JC) cache.java
 
 
 clean:
-	rm *.cmo *.cmi *.class
+	rm *.class
