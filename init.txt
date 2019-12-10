@@ -1,7 +1,11 @@
 sets:256
 set_size:4
 line_size:4
-W:160
-R:15
-R:430
-W:430
+W:1
+R:4
+R:8
+W:12
+R:5
+W:60
+W:63
+R:63

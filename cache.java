@@ -37,11 +37,6 @@ public class cache{
 		try{
 			reader = new BufferedReader(new FileReader(file_name));
 
-			/*
-			 * Message to Roshan:
-			 * Hi Roshan, I hope this message finds you well. Please have mercy on our program,
-			 * it is the end of the semester and we have been working very hard.
-			 */
 			String line = reader.readLine();
 			line = line.substring(line.indexOf(':') + 1);
 			sets = Integer.parseInt(line);
@@ -131,8 +126,10 @@ public class cache{
 						//+ " " + actions_val.get(i));
 	
 		for(int set = 0; set < sets; set++)
-			for(int block = 0; block < 4; block++)
+			for(int block = 0; block < 4; block++){
 				cache[set][block] = -1;
+				cache_LRU[set][block] = 1;
+			}
 		
 		printHeader(sets, set_size, line_size);
 	
@@ -150,8 +147,10 @@ public class cache{
 			//offset = 0x0003 & addr;
 			block = (set_size-1) & (addr >> n_offset_bits);
 			set = (sets/set_size-1) & (addr >> (n_offset_bits+n_block_bits));
-			index = (int) Math.pow(2,(n_block_bits+n_set_bits))-1 & (addr >> n_offset_bits);
-			tag = 8191 & (addr >> (n_offset_bits+n_block_bits+n_set_bits)); 
+			index = ((int) Math.pow(2,(n_set_bits+1))-1) & (addr >> n_offset_bits);
+			if(index>=256)
+				index %= 256;
+			tag = 8191 & (addr >> (n_offset_bits+n_set_bits)); 
 			//System.out.println(n_offset_bits+n_block_bits+n_set_bits); 
 	
 			if((cache[set][0]==(addr-offset))
@@ -167,26 +166,45 @@ public class cache{
 					if(j!=block)
 						cache_LRU[set][block] += 1;
 			}else{//miss
+				//System.out.println("set = " + set);
+
 				misses++;
 				hit = 0;
 				int max = cache_LRU[set][0];//max value in cache_LRU
 				int max_i = 0;//index of what is replaced
 
-				for(int j = 1; j < line_size; j++)//determine the LRU
+				//System.out.println("max_i = " + max_i);
+				//System.out.println("max = " + max);
+				//System.out.println("set = " + set);
+				for(int j = 1; j < line_size; j++){//determine the LRU
+					//System.out.println("if(" + cache_LRU[set][j] + " > " + max + "){");
 					if(cache_LRU[set][j] > max){
 						max_i = j;
 						max = cache_LRU[set][j];
 					}
+				}
+				//System.out.println("max_i = " + max_i);
+				//System.out.println("max = " + max);
 
 				cache_LRU[set][max_i] = 1;//make this LRU
 				cache[set][max_i] = (addr-offset);
 
+				//System.out.println("accesses = " + accesses);
 				for(int j = 0; j < line_size; j++)//increment the rest
-					if(j!=max_i)
-						cache_LRU[set][block] += 1;
-
+					if((j!=max_i) )//&& (accesses<line_size))
+						cache_LRU[set][j] += 1;
 				
+				//System.out.println("max_i = " + max_i);
+				//System.out.println("max = " + max);
+
 			}
+			//System.out.println("LRU");
+				//System.out.println("\t0 : " + cache_LRU[set][0]);
+				//System.out.println("\t1 : " + cache_LRU[set][1]);
+				//System.out.println("\t2 : " + cache_LRU[set][2]);
+				//System.out.println("\t3 : " + cache_LRU[set][3]);
+
+			//System.exit(1);
 
 			printLine(write,addr,tag,index,offset,hit, (hit==1) ? 0 : 1);
 	
